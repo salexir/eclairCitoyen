@@ -35,21 +35,43 @@ ui <- dashboardPage(
     tabItems(
       tabItem(tabName = "tsAnalysis",
               fluidRow(
+      
+                
+                
                 tabBox(width = 9, 
                        title = "",
                        id = "spendingOverTime_tabbox",
                        tabPanel("Graph", 
                                 plotOutput(outputId = "out_totalSpendingOverTime", brush = "plot_brush"),
-                                checkboxGroupInput(inputId = "in_totalSpendingOverTime", label = "Select Line Items:",
-                                                   choices = sort(unique(fin_data$model_outputs_validated)),
-                                                   selected = sort(unique(fin_data$model_outputs_validated)), inline = TRUE)),
-                       tabPanel("Controls")),
-                box(width =  3,  collapsible = TRUE,
-                    DTOutput("out_totalSpendingOverTime_info"))#,
-                # box(width =  3,  collapsible = TRUE,
-                #     checkboxGroupInput(inputId = "in_totalSpendingOverTime", label = "Select Line Items:",
-                #                         choices = sort(unique(fin_data$model_outputs_validated)),
-                #                         selected = sort(unique(fin_data$model_outputs_validated))))
+                                dropdown(
+                                  
+                                  tags$h3("Controls"),
+                                  
+                                  
+                                  
+                                  pickerInput(
+                                    inputId = "in_totalSpendingOverTime",
+                                    label = "Select Line Items:", 
+                                    choices = list(`Hierarchy 1` = sort(unique(fin_data$model_outputs_validated))[1:15],
+                                                   `Hierarchy 2` = sort(unique(fin_data$model_outputs_validated))[16:32]),
+                                    selected = sort(unique(fin_data$model_outputs_validated)),
+                                    options = list(
+                                      `actions-box` = TRUE,
+                                      `size` = 8), 
+                                    multiple = TRUE,
+                                  )
+                                  
+                                  
+                                  ,
+                                  
+                                  circle = TRUE, status = "danger",
+                                  icon = icon("gear"),size = "xs",
+                                  
+                                  tooltip = tooltipOptions(title = "Click to see inputs !")
+                                ),
+                                ),
+                       tabPanel("More Info", DTOutput("out_totalSpendingOverTime_info"))
+                         )
               )
               
               
