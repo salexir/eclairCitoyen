@@ -47,18 +47,19 @@ ui <- dashboardPage(
                                   
                                   tags$h3("Controls"),
                                   
-                                  
-                                  
-                                  pickerInput(
+                                 
+                                  virtualSelectInput(
                                     inputId = "in_totalSpendingOverTime",
-                                    label = "Select Line Items:", 
-                                    choices = list(`Hierarchy 1` = sort(unique(fin_data$model_outputs_validated))[1:15],
-                                                   `Hierarchy 2` = sort(unique(fin_data$model_outputs_validated))[16:32]),
-                                    selected = sort(unique(fin_data$model_outputs_validated)),
-                                    options = list(
-                                      `actions-box` = TRUE,
-                                      `size` = 8), 
+                                    label = "Select groups :",
+                                    choices = list(`Needs` = list(ui_inputs$Needs),
+                                                   `Discretionary` = list(ui_inputs$Discretionary),
+                                                   `Investment` = list(ui_inputs$Investment),
+                                                   `Loan` = list(ui_inputs$Loan),
+                                                   `Misc.` = list(ui_inputs$Misc.)),
+                                    selected = ui_inputs$Needs,
                                     multiple = TRUE,
+                                    search = TRUE,
+                                    optionsCount = 5
                                   )
                                   
                                   

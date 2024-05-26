@@ -51,6 +51,8 @@ category_map <- structure(list(model_output = c("Bank", "Beer", "Bills-Gas",
 core_fin_data_columns <- c("Date", "Transaction_Type", "Account_Type", "Merchant", "Amount", 
                            "Note", "Signed_Split_Amount", "model_outputs_validated", "category")
 
+ui_inputs <- split(category_map$model_output, category_map$category)
+
 fin_data <- fin_data %>% left_join(category_map, by = c("model_outputs_validated"="model_output"))
 
 
