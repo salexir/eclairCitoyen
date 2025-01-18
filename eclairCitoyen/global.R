@@ -34,24 +34,22 @@ fin_data$Date <- as.Date(fin_data$Date)
 # 2.0 Misc Manipulations -------------------------------------------------------
 
 
-category_map <- structure(list(model_output = c("Bank", "Beer", "Bills-Gas", 
-                                "Bills-Hydro", "Bills-Internet", "Bills-Phone", "Coffee", "DiningOut", 
-                                "Education", "Entertainment", "Gifts", "Groceries", "Health", 
-                                "Income", "Insurance", "Investment", "Investment-RRSP", "Investment-TFSA", 
-                                "Joint Funding", "JointFunding", "Loan-Student", "Matty-The-Catty", 
-                                "Misc-Move", "Misc.", "Move", "News", "Rent", "TaxReturn", "Tech", 
-                                "tech-scaffold", "Transportation", "Travel"),
-                               category = structure(c(4L, 1L, 5L, 5L, 5L, 5L, 1L, 
-                                                      1L, 5L, 1L, 1L, 5L, 5L, 6L, 
-                                                      5L, 2L, 2L, 2L, 6L, 6L, 3L, 
-                                                      5L, 4L, 4L, 4L, 1L, 5L, 6L, 
-                                                      4L, 6L, 5L, 1L), levels = 
-                                                      c("Discretionary", "Investment", "Loan", 
-                                                        "Misc.", "Needs", "Non-Spend"), class = "factor")), 
-                          class = "data.frame", row.names = c(NA,-32L))
+category_map <- 
+  
+  structure(list(model_output = c("Bank", "Beer", "Bills-Gas", 
+"Bills-Hydro", "Bills-Internet", "Bills-Phone", "Bills-Water", 
+"Coffee", "DiningOut", "Education", "Entertainment", "Gifts", 
+"Groceries", "Health", "Income", "Insurance", "Investment-NonReg", 
+"Investment-RRSP", "Investment-TFSA", "JointFunding", "Loan-Student", 
+"Matty-The-Catty", "Misc.", "Move", "News", "Rent", "TaxReturn", 
+"Tech", "tech-scaffold", "Transportation", "Travel"), category = structure(c(4L, 
+1L, 5L, 5L, 5L, 5L, 5L, 1L, 1L, 5L, 1L, 1L, 5L, 5L, 6L, 5L, 2L, 
+2L, 2L, 6L, 3L, 5L, 4L, 4L, 1L, 5L, 6L, 4L, 6L, 5L, 1L), levels = c("Discretionary", 
+"Investment", "Loan", "Misc.", "Needs", "Non-Spend"), class = "factor")), row.names = c(NA, 
+-31L), class = "data.frame")
 
 
-core_fin_data_columns <- c("Date", "Transaction_Type", "Account_Type", "Merchant", "Amount", 
+core_fin_data_columns <- c("yyyy","yyyymm","Date", "Transaction_Type", "Account_Type", "Merchant", "Amount", 
                            "Note", "Signed_Split_Amount", "model_outputs_validated", "category")
 
 ui_inputs <- split(category_map$model_output, category_map$category)
