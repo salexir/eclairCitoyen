@@ -54,8 +54,22 @@ core_fin_data_columns <- c("yyyy","yyyymm","Date", "Transaction_Type", "Account_
 
 ui_inputs <- split(category_map$model_output, category_map$category)
 
+category_inputs <- names(ui_inputs)
+
+category_inputs <- category_inputs[category_inputs != "Non-Spend"]
+
 fin_data <- fin_data %>% left_join(category_map, by = c("model_outputs_validated"="model_output"))
 
+# 3.0 Budget Framing -----------------------------------------------------------
+
+budget_table <- 
+  data.frame(model_outputs = category_map$model_output,
+             year = 2024,
+             budgeted_amount = NA_real_,
+             frequency = NA_integer_,
+             Notes = NA_character_)
+
+# 4.0 "Theme-ing" --------------------------------------------------------------
 
 theme_lab <- function () { 
   theme_grey(base_size = 14, base_family = "sans") %+replace% 
