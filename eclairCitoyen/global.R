@@ -3,7 +3,10 @@ library(RSQLite)
 library(dplyr)
 library(DT)
 library(ggplot2)
+library(tidyr)
 library(shinyWidgets)
+library(DataEditR)
+library(rhandsontable)
 
 
 # 1.0 Load Data ----------------------------------------------------------------
