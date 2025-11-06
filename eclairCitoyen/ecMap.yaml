@@ -1,0 +1,101 @@
+column_name_map:
+  date:
+    db_col: "internal_date"
+    r_type: "date"
+    core_reporting_column: true
+    sort_order: "a"
+  bank_name:
+    db_col: "internal_bank"
+    r_type: "factor"
+    core_reporting_column: true
+    sort_order: "b"
+  transaction_currency:
+    db_col: "internal_currency"
+    r_type: "factor"
+    core_reporting_column: true
+    sort_order: "a"
+  account_type_primary:
+    db_col: "account_type_1"
+    r_type: "factor"
+    core_reporting_column: true
+    sort_order: "d"
+  account_type_secondary:
+    db_col: "account_type_2"
+    r_type: "factor"
+    core_reporting_column: false
+    sort_order: "e"
+  transaction_type:
+    db_col: "transaction_type"
+    r_type: "factor"
+    core_reporting_column: true
+    sort_order: "f"
+  merchant:
+    db_col: "internal_merchant"
+    r_type: "character"
+    core_reporting_column: true
+    sort_order: "g"
+  transaction_amount:
+    db_col: "internal_amount"
+    r_type: "numeric"
+    core_reporting_column: true
+    sort_order: "h"
+  transaction_amount_cad:
+    db_col: "CAD_amount"
+    r_type: "numeric"
+    core_reporting_column: true
+    sort_order: "i"
+  transaction_amount_cad_split:
+    db_col: "CAD_split_amount"
+    r_type: "numeric"
+    core_reporting_column: true
+    sort_order: "j"
+  transaction_amount_cad_signed_split:
+    db_col: "CAD_signed_split_amount"
+    r_type: "numeric"
+    core_reporting_column: true
+    sort_order: "k"
+  transaction_amount_gbp:
+    db_col: "GBP_amount"
+    r_type: "numeric"
+    core_reporting_column: true
+    sort_order: "l"
+  transaction_amount_gbp_split:
+    db_col: "GBP_split_amount"
+    r_type: "numeric"
+    core_reporting_column: true
+    sort_order: "m"
+  transaction_amount_gbp_signed_split:
+    db_col: "GBP_signed_split_amount"
+    r_type: "numeric"
+    core_reporting_column: true
+    sort_order: "n"
+  note:
+    db_col: "note"
+    r_type: "character"
+    core_reporting_column: true
+    sort_order: "o"
+  model_output_generated:
+    db_col: "model_outputs_generated"
+    r_type: "factor"
+    core_reporting_column: false
+    sort_order: "p"
+  model_output_validated:
+    db_col: "model_outputs_validated"
+    r_type: "factor"
+    core_reporting_column: true
+    sort_order: "q"
+  is_sabbatical_year:
+    db_col: "is_sabbatical_year"
+    r_type: "logical"
+    core_reporting_column: false
+    sort_order: "r"
+  is_deleted:
+    db_col: "deletion_flag"
+    r_type: "logical"
+    core_reporting_column: false
+    sort_order: "s"
+  row_id:
+    db_col: "row_id"
+    r_type: "integer"
+    core_reporting_column: false
+    sort_order: "t"

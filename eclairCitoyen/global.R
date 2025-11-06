@@ -7,9 +7,13 @@ library(tidyr)
 library(shinyWidgets)
 library(DataEditR)
 library(rhandsontable)
+library(rlang)
 
 
 # 1.0 Load Data ----------------------------------------------------------------
+
+## IF DEVELOPING UNCOMMENT
+#setwd('./eclairCitoyen/')
 
 # Connecting to data source
 path <- '~/git-repos/aux-bourses-citoyens//integraFin/output/fin-database.sqlite'
@@ -17,40 +21,31 @@ path <- '~/git-repos/aux-bourses-citoyens//integraFin/output/fin-database.sqlite
 con <- dbConnect(SQLite(), path)
 fin_data <- dbGetQuery(con, 'SELECT * FROM financial_data')
 
-fin_data <- fin_data %>% mutate(yyyymm = substr(Date, 1, 7),
-                                yyyy = substr(Date, 1, 4),
-                                Date = as.Date(Date, format = "%Y-%m-%d"))
+# Read up core maps
+source(file = 'helpers.R')
 
-factor_columns <- c("Transaction_Type", "Account_Type", "Account_Type2","model_outputs_validated", 
-                    "yyyymm", "yyyy")
+category_map <- yaml::read_yaml(file = 'category-map.yaml')
+category_map <- list_to_df(category_map[[1]], keys_to_grab = "category", id_col = "model_output")
 
-fin_data[, factor_columns] <- lapply(fin_data[, factor_columns], as.factor)
+ec_map <- yaml::read_yaml(file = 'ecMap.yaml')
+ec_map <- list_to_df(ec_map[[1]], keys_to_grab = c("db_col", "r_type", "sort_order","core_reporting_column"), id_col = "app_colnames")
 
-fin_data$Date <- as.Date(fin_data$Date)
+# Now apply transforms from core maps to fin_data
+factor_cols <- ec_map$db_col[ec_map$r_type == "factor"]
+fin_data[, factor_cols] <- lapply(fin_data[, factor_cols, drop = FALSE], as.factor)
+
+date_cols <- ec_map$db_col[ec_map$r_type == "date"]
+fin_data[, date_cols] <- lapply(fin_data[, date_cols, drop = FALSE], as.Date)
+
+# Remap fin_data names to something stable for EC:
+## Resort
+fin_data <-  fin_data[ec_map$db_col]
+colnames(fin_data) <- ec_map$app_colnames
 
 
-
+fin_data <- fin_data %>% split_dates_into_components(date_col = date) # TODO:This should belong in NC
 
 # 2.0 Misc Manipulations -------------------------------------------------------
-
-
-category_map <- 
-  
-  structure(list(model_output = c("Bank", "Beer", "Bills-Gas", 
-"Bills-Hydro", "Bills-Internet", "Bills-Phone", "Bills-Water", 
-"Coffee", "DiningOut", "Education", "Entertainment", "Gifts", 
-"Groceries", "Health", "Income", "Insurance", "Investment-NonReg", 
-"Investment-RRSP", "Investment-TFSA", "JointFunding", "Loan-Student", 
-"Matty-The-Catty", "Misc.", "Move", "News", "Rent", "TaxReturn", 
-"Tech", "tech-scaffold", "Transportation", "Travel"), category = structure(c(4L, 
-1L, 5L, 5L, 5L, 5L, 5L, 1L, 1L, 5L, 1L, 1L, 5L, 5L, 6L, 5L, 2L, 
-2L, 2L, 6L, 3L, 5L, 4L, 4L, 1L, 5L, 6L, 4L, 6L, 5L, 1L), levels = c("Discretionary", 
-"Investment", "Loan", "Misc.", "Needs", "Non-Spend"), class = "factor")), row.names = c(NA, 
--31L), class = "data.frame")
-
-
-core_fin_data_columns <- c("yyyy","yyyymm","Date", "Transaction_Type", "Account_Type", "Merchant", "Amount", 
-                           "Note", "Signed_Split_Amount", "model_outputs_validated", "category")
 
 ui_inputs <- split(category_map$model_output, category_map$category)
 
@@ -58,7 +53,9 @@ category_inputs <- names(ui_inputs)
 
 category_inputs <- category_inputs[category_inputs != "Non-Spend"]
 
-fin_data <- fin_data %>% left_join(category_map, by = c("model_outputs_validated"="model_output"))
+core_fin_data_columns <- c("yyyy", "yyyymm", ec_map$app_colnames[ec_map$core_reporting_column == 1])
+
+fin_data <- fin_data %>% left_join(category_map, by = c("model_output_validated"="model_output"))
 
 # 3.0 Budget Framing -----------------------------------------------------------
 
@@ -107,3 +104,6 @@ theme_lab <- function () {
       strip.text = element_text(size = 12, face = "bold", colour = "#757575", hjust = 0)
     )
 }
+
+
+
