@@ -11,7 +11,7 @@ server <- function(input, output){
         filter(category %in% input$in_totalSpendingOverTime_rolledUp,
                category != "Non-Spend") %>%
         group_by(yyyymm, category) %>%
-        summarise(Total_Spends = (sum(Signed_Split_Amount))*-1) %>%
+        summarise(Total_Spends = (sum(transaction_amount_cad_signed_split))*-1) %>%
         ungroup() %>%
         mutate(yyyymm = as.Date(paste0(yyyymm, "-01"))) # Allows for nicer date output in ggplot
       
@@ -44,9 +44,9 @@ server <- function(input, output){
     reactive({
       
       fin_data %>%
-        filter(model_outputs_validated %in% input$in_totalSpendingOverTime) %>%
-        group_by(model_outputs_validated, Date) %>%
-        summarise(Total_Spends = (sum(Signed_Split_Amount))*-1)
+        filter(model_output_validated %in% input$in_totalSpendingOverTime) %>%
+        group_by(model_output_validated, date) %>%
+        summarise(Total_Spends = (sum(transaction_amount_cad_signed_split))*-1)
       
       
     })
@@ -54,8 +54,8 @@ server <- function(input, output){
   output$out_totalSpendingOverTime <-
     renderPlot(
       totalSpendingOverTime() %>%
-        ggplot(aes(x = Date, y = Total_Spends, colour = model_outputs_validated,
-                   group = model_outputs_validated)) + 
+        ggplot(aes(x = date, y = Total_Spends, colour = model_output_validated,
+                   group = model_output_validated)) + 
         geom_point() + geom_line() +  
         scale_x_date(date_labels = "%b %y", date_breaks = "3 month", date_minor_breaks = "1 month", limits = c(as.Date("2021-01-01"), NA)) + theme_lab() + scale_y_continuous(labels = scales::dollar) + 
         ggtitle("Spending by Category, over time") + ylab("Nominal CAD ($)") + xlab("YYYY-MM") + 
@@ -77,17 +77,17 @@ server <- function(input, output){
       filter(category != "Non-Spend",
              yyyy == input$in_totalSpendingOverTime_table) %>%
       mutate(num_months = n_distinct(yyyymm)) %>%
-      group_by(yyyy, yyyymm, num_months, model_outputs_validated) %>%
-      summarise(Total = round(sum(Signed_Split_Amount)*-1, digits = 2)) %>%
+      group_by(yyyy, yyyymm, num_months, model_output_validated) %>%
+      summarise(Total = round(sum(transaction_amount_cad_signed_split)*-1, digits = 2)) %>%
       mutate(month_viz = format(as.Date(paste0(yyyymm, "-01")), "%b %Y")) %>%
-      group_by(yyyy, model_outputs_validated) %>%
+      group_by(yyyy, model_output_validated) %>%
       mutate(YTD = round(sum(Total), 2),
              Monthly_Average = round(YTD/num_months, 2)) %>%
       ungroup() %>%
       select(-c(yyyymm, num_months, yyyy)) %>%
       pivot_wider(names_from = month_viz, values_from = Total) %>%
       relocate(c(YTD, Monthly_Average), .after = last_col()) %>%
-      arrange(model_outputs_validated)
+      arrange(model_output_validated)
     
   })
   
@@ -96,10 +96,10 @@ server <- function(input, output){
     reactive({
       
       fin_data %>% 
-        filter(model_outputs_validated %in% input$in_comparativeSpends_monthly_yoy) %>%
-        mutate(month = factor(format(Date, "%b"), month.abb, ordered = TRUE)) %>% 
-        group_by(yyyy, month, model_outputs_validated) %>% 
-        summarise(Total_Spends = sum(Split_Amount))
+        filter(model_output_validated %in% input$in_comparativeSpends_monthly_yoy) %>%
+        mutate(month = factor(format(date, "%b"), month.abb, ordered = TRUE)) %>% 
+        group_by(yyyy, month, model_output_validated) %>% 
+        summarise(Total_Spends = sum(transaction_amount_cad_split))
       
     })
   
@@ -109,7 +109,7 @@ server <- function(input, output){
     comparativeSpends() %>% 
       ggplot(aes(x = month, y = Total_Spends, fill = yyyy, group = yyyy)) + 
       geom_col(position = "dodge") +
-      facet_wrap(~model_outputs_validated) + 
+      facet_wrap(~model_output_validated) + 
       scale_fill_brewer(type = "seq") + 
       theme_lab() + scale_y_continuous(labels = scales::dollar)
     
@@ -136,19 +136,19 @@ server <- function(input, output){
     fin_data %>%
       filter(category != "Non-Spend",
              yyyy %in% input$in_number_of_transactions, 
-             Transaction_Type == "Debit") %>% # Refunds (via crediting) don't count as a distinct transaction, hence removed.
+             transaction_type == "Debit") %>% # Refunds (via crediting) don't count as a distinct transaction, hence removed.
       mutate(num_months = n_distinct(yyyymm)) %>%
-      group_by(yyyy, yyyymm, num_months, model_outputs_validated) %>%
+      group_by(yyyy, yyyymm, num_months, model_output_validated) %>%
       summarise(Number_of_transactions =n() ) %>%
       mutate(month_viz = format(as.Date(paste0(yyyymm, "-01")), "%b %Y")) %>%
-      group_by(yyyy, model_outputs_validated) %>%
+      group_by(yyyy, model_output_validated) %>%
       mutate(YTD = round(sum(Number_of_transactions), 2),
              Monthly_Average = round(YTD/num_months, 2)) %>%
       ungroup() %>%
       select(-c(yyyymm, num_months, yyyy)) %>%
       pivot_wider(names_from = month_viz, values_from = Number_of_transactions) %>%
       relocate(c(YTD, Monthly_Average), .after = last_col()) %>%
-      arrange(model_outputs_validated)
+      arrange(model_output_validated)
     
   })
   
@@ -163,9 +163,9 @@ server <- function(input, output){
         group_by(yyyy) %>% 
         mutate(n_months = length(unique(yyyymm))) %>% 
 #        filter(n_months == 12) %>%
-        group_by(yyyy, model_outputs_validated) %>% 
+        group_by(yyyy, model_output_validated) %>% 
         summarise(`Num Transactions` = n(), 
-                  Total_Spends = sum(Signed_Split_Amount)*-1,
+                  Total_Spends = sum(transaction_amount_cad_signed_split)*-1,
                   Monthly_Average = round(Total_Spends/first(n_months), 2)) %>% 
         select(-Total_Spends) %>%
         pivot_wider(names_from = yyyy, values_from = c(`Num Transactions`, Monthly_Average))

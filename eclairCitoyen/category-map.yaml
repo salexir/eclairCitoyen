@@ -1,0 +1,65 @@
+model_output_category_map:
+  Bank:
+    category: "Misc."
+  Beer:
+    category: "Discretionary"
+  Bills-Gas:
+    category: "Needs"
+  Bills-Hydro:
+    category: "Needs"
+  Bills-Internet:
+    category: "Needs"
+  Bills-Phone:
+    category: "Needs"
+  Bills-Water:
+    category: "Needs"
+  Coffee:
+    category: "Discretionary"
+  DiningOut:
+    category: "Discretionary"
+  Education:
+    category: "Needs"
+  Entertainment:
+    category: "Discretionary"
+  Gifts:
+    category: "Discretionary"
+  Groceries:
+    category: "Needs"
+  Health:
+    category: "Needs"
+  Income:
+    category: "Non-Spend"
+  Insurance:
+    category: "Needs"
+  Investment-NonReg:
+    category: "Investment"
+  Investment-RRSP:
+    category: "Investment"
+  Investment-TFSA:
+    category: "Investment"
+  JointFunding:
+    category: "Non-Spend"
+  Loan-Student:
+    category: "Loan"
+  Matty-The-Catty:
+    category: "Needs"
+  Misc.:
+    category: "Misc."
+  Move:
+    category: "Misc."
+  News:
+    category: "Discretionary"
+  Rent:
+    category: "Needs"
+  TaxReturn:
+    category: "Non-Spend"
+  Tech:
+    category: "Misc."
+  internal-transfer:
+    category: "Non-Spend"
+  Transportation:
+    category: "Needs"
+  Travel:
+    category: "Discretionary"
+  UK-Year-Abroad:
+    category: "UK-Year-Abroad"
